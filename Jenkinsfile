@@ -33,6 +33,13 @@ pipeline {
                 }
             }
         }
+    
+
+        stage('NEXUS DEPLOY') {
+            steps {
+                sh 'mvn deploy -DskipTests'
+            }
+        }
     }
     
     post {
