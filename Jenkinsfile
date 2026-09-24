@@ -33,11 +33,37 @@ pipeline {
                 }
             }
         }
-    
-
+        
         stage('NEXUS DEPLOY') {
             steps {
                 sh 'mvn deploy -DskipTests'
+            }
+        }
+        
+        stage('BUILDING IMAGE') {
+            steps {
+                sh 'mvn package -DskipTests'
+                sh 'docker build -t emnayacoubi/timesheet:1.0.0 .'
+            }
+        }
+        
+        stage('DEPLOY IMAGE') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-credentials',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
+                    sh 'docker push emnayacoubi/timesheet:1.0.0'
+                }
+            }
+        }
+        
+        stage('DOCKER COMPOSE') {
+            steps {
+                sh 'docker compose down || true'
+                sh 'docker compose up -d'
             }
         }
     }
