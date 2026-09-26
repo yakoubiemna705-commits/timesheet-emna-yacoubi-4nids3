@@ -43,7 +43,7 @@ pipeline {
         stage('BUILDING IMAGE') {
             steps {
                 sh 'mvn package -DskipTests'
-                sh 'docker build -t emnayacoubi/timesheet:1.1.0 .'
+                sh 'docker build -t emnayakoubi/timesheet:1.1.0 .'
             }
         }
         
@@ -55,7 +55,7 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker push emnayacoubi/timesheet:1.1.0'
+                    sh 'docker push emnayakoubi/timesheet:1.1.0'
                 }
             }
         }
